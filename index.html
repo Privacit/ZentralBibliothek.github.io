@@ -4,70 +4,136 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matrix Biblioteca Page</title>
+
+    <!-- Fuente estilo Matrix -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
     <style>
+        /* Estilos generales */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #333;
-            color: #fff;
+            margin: 0;
+            font-family: 'Share Tech Mono', monospace;
+            background-color: black;
+            color: #00ff00; /* Verde Matrix */
+            overflow: hidden; /* Evita barras de desplazamiento */
         }
-        
+
+        /* Contenedor principal */
         .matrix-container {
-            width: 80%;
-            margin: 40px auto;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
+            z-index: 10; /* Asegura que el contenido esté sobre el canvas */
         }
-        
+
+        /* Estilos del título */
         h1 {
-            font-size: 36px;
+            font-size: 48px;
             font-weight: bold;
-            letter-spacing: -2px;
-            text-shadow: 0 0 10px #fff, 0 0 20px rgba(255, 255, 255, .5);
+            text-shadow: 0 0 10px #00FF00, 0 0 20px rgba(0, 255, 0, .5);
         }
-        
+
+        /* Estilos del párrafo */
         p {
-            margin-bottom: 40px;
+            font-size: 20px;
+            margin-bottom: 30px;
         }
+
+        /* Botón de acceso */
         a {
-            margin-bottom: 20px;
+            display: inline-block;
+            font-size: 20px;
+            color: #00ff00;
+            text-decoration: none;
+            background: black;
+            padding: 12px 24px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #00ff00, 0 0 20px rgba(0, 255, 0, 0.5);
+            transition: 0.3s;
         }
 
+        a:hover {
+            background: #00ff00;
+            color: black;
+            box-shadow: 0 0 20px #00ff00;
+        }
 
-
-
+        /* Canvas para el efecto Matrix */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Detrás del contenido */
+        }
 
     </style>
 </head>
 <body>
-    <div class="matrix-container">
-        <h1>Biblioteca libre</h1>
-        <p>Selección de libros para compartir gratuitamente. </p>
-        <a href="https://drive.proton.me/urls/CR8MBNSMQ4#LnPNTvzFVMRd">Acceso al drive</a>
 
+    <!-- Efecto Matrix -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- Contenido principal -->
+    <div class="matrix-container">
+        <h1>Biblioteca Libre</h1>
+        <p>Selección de libros para compartir gratuitamente.</p>
+        <a href="https://drive.proton.me/urls/CR8MBNSMQ4#LnPNTvzFVMRd" target="_blank">📚 Acceso al Drive</a>
     </div>
-    
-    <!-- Add some matrix-like effects -->
+
+    <!-- Script para el efecto Matrix -->
     <script>
-        // Get all elements with class "matrix-effect"
-        const matrixEffects = document.querySelectorAll('.matrix-effect');
-        
-        // Loop through each element
-        matrixEffects.forEach((effect) => {
-            // Create a new canvas and add it to the effect container
-            const canvas = document.createElement('canvas');
-            canvas.width = 200;
-            canvas.height = 100;
-            
-            // Get the context of the canvas
-            const ctx = canvas.getContext('2d');
-            
-            // Draw some matrix-like effects on the canvas
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(0, 0, 200, 100);
-            
-            // Add the canvas to the effect container and remove it from the original list
-            effect.appendChild(canvas);
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Ajustar tamaño del canvas
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Caracteres Matrix
+        const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%";
+        const letters = matrixChars.split("");
+
+        const fontSize = 16;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array(columns).fill(0);
+
+        function drawMatrixEffect() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#00FF00";
+            ctx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                ctx.fillText(text, x, y);
+
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrixEffect, 50);
+
+        // Redimensionar el canvas si cambia el tamaño de la ventana
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         });
+
     </script>
-    
+
 </body>
 </html>
